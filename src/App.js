@@ -1,24 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
 
 function App() {
+  const [dados, setDados] = React.useState(null);
+  const [loading, setLoading] = React.useState(null);
+
+  async function handleClick(ev) {
+    setLoading(true);
+    const response = await (
+      await fetch(
+        `https://ranekapi.origamid.dev/json/api/produto/${ev.target.innerText}`
+      )
+    ).json();
+
+    setDados(response);
+    setLoading(false);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <button style={{ margin: "20px" }} onClick={handleClick}>
+        Notebook
+      </button>
+      <button style={{ margin: "20px" }} onClick={handleClick}>
+        Smartphone
+      </button>
+      <button onClick={handleClick}>Tablet</button>
+      <div>
+        <h1>{dados.nome ? dados.nome : { loading }}</h1>
+        <p>R$ {dados.preco ? dados.preco : { loading }}</p>
+        <img src={dados?.fotos[0].src} alt={dados.descricao}/>
+      </div>
+    </>
   );
 }
 
